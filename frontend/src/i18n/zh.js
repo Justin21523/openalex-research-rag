@@ -5,6 +5,7 @@ export const zh = {
     subtitle: '學術研究智能平台',
   },
   nav: {
+    demoGuide: 'Demo 導覽',
     dashboard: '總覽儀表板',
     search: '論文搜尋',
     timeline: '論文時間軸',
@@ -24,6 +25,41 @@ export const zh = {
     ingest: '資料管理',
   },
   pages: {
+    demoGuide: {
+      badge: '面試展示入口',
+      title: 'OpenAlex Research Intelligence Demo',
+      subtitle: '這一頁把整個專案濃縮成面試官能快速理解的展示路線：從資料上傳或 sample data 開始，看到資料如何被清理、索引、檢索、融合、評估，最後生成有引用的 RAG 答案。',
+      startTour: '啟動導覽小幫手',
+      openJourney: '開始資料旅程',
+      flowKicker: 'Pipeline Journey',
+      flowTitle: '資料如何一步步變成答案',
+      flow: {
+        raw: 'Raw OpenAlex',
+        clean: '清理 / tokenize',
+        bm25: 'BM25',
+        vector: 'Embedding',
+        rrf: 'RRF 融合',
+        context: 'Context',
+        answer: '引用答案',
+      },
+      stats: {
+        works: { value: '38,152', label: 'OpenAlex 論文' },
+        vectors: { value: '38,152', label: '語意向量' },
+        llm: { value: 'LLM', label: 'llama.cpp 接入' },
+      },
+      cards: {
+        dataStory: { title: '資料旅程', body: '上傳或使用 sample，觀看資料穿過 7 個 pipeline 階段。' },
+        playground: { title: '資料實驗場', body: '重建 BM25 / embedding，測試搜尋、RAG 與 evaluation。' },
+        topics: { title: 'Topic / Genre 視覺化', body: '排除過大類別後呈現更具特色的主題趨勢與 heatmap。' },
+        authors: { title: 'Author Network', body: '作者與 co-author network 展示合作關係，不再空白。' },
+      },
+      interviewerTitle: '面試官應該看到的重點',
+      points: {
+        engineering: { title: '完整工程鏈', body: 'FastAPI、DuckDB、BM25、ChromaDB、React、SSE、部署與 LLM tunnel 都整合在同一個 demo。' },
+        explainability: { title: '可解釋性', body: '每個數值都附上「代表什麼、造成什麼效果、為什麼重要」，不是只有圖表結果。' },
+        demo: { title: '可操作 Demo', body: '導覽小幫手會跳到對應頁面、highlight 區塊並用動畫說明操作流程。' },
+      },
+    },
     topics: {
       title: '主題趨勢',
       subtitle: '依概念劃分的發表趨勢與概念共現網路',
@@ -316,6 +352,8 @@ export const zh = {
       couldNotLoad: '無法載入作者詳細資料',
       featuredAuthors: '精選作者',
       featuredHint: '語料庫中最常被引用 — 點擊以探索',
+      networkPreviewTitle: '合作網路預覽',
+      networkPreviewDesc: '語料庫中頂尖作者的即時 co-author graph。點擊上方任一作者卡片可查看該作者自己的 network。',
     },
     analytics: {
       title: '搜尋分析',
@@ -398,6 +436,37 @@ export const zh = {
       lockedSearch: '🔒 完成搜尋測試後解鎖',
       s6: '評估儀表板',
       lockedRag: '🔒 完成 RAG 測試後解鎖',
+      eval: {
+        corpus: '總論文數',
+        uploaded: '用戶上傳',
+        bm25Vocab: 'BM25 詞彙量',
+        vectorCount: '向量數量',
+        noEmbeddings: '尚未建立嵌入',
+        ready: '已建立',
+        running: '評估中（約 10–30 秒）…',
+        run: '▸ 執行評估',
+        corpusPapers: '語料庫論文數',
+        testQueries: '測試查詢數',
+        evalModes: '評估模式',
+        latencyChart: '延遲分布圖',
+        tradeoffChart: '可解釋 tradeoff 指標',
+        overlapChart: 'BM25 / Vector 結果重疊',
+        coverage: 'Coverage@10',
+        grounding: 'Grounding ready',
+        tokenMatch: 'Token match',
+        recommendation: '自動建議',
+        fastest: '{mode} 平均延遲最低（{ms} ms），適合低延遲場景。',
+        broadest: '{mode} coverage 最高（{pct}%），適合需要完整候選集的探索。',
+        hybridDefault: 'HYBRID 同時吸收 BM25 的精確命中與 Vector 的語意召回，建議作為預設模式。',
+        table: {
+          mode: '模式',
+          mean: 'Mean ms',
+          coverage: 'Coverage',
+          grounding: 'Grounding',
+          citations: 'Avg cites',
+          hits: 'Avg hits',
+        },
+      },
     },
     dataStory: {
       title: '資料旅程 Data Story',
@@ -410,6 +479,7 @@ export const zh = {
       change: '重新選擇',
       queryTitle: '② 選一個查詢',
       queryHint: '輸入問題，或點下方範例，開始追蹤它在系統中的旅程。',
+      queryHintSample: '如果尚未上傳資料，系統會自動載入內建 sample data 後開始示範。',
       queryPlaceholder: '例如：transformer attention mechanism',
       run: '開始旅程',
       running: '執行中…',
@@ -513,6 +583,14 @@ export const zh = {
     welcomeTitle: '👋 歡迎使用導覽小幫手',
     welcomeBody: '我會帶你一步步走過這個學術研究智能平台的核心功能，看看背後的工程設計。隨時可按「略過」結束。',
     steps: {
+      demoGuide: {
+        title: 'Demo 導覽入口',
+        body: '這是面試展示的第一站：它用一條清楚路線串起資料來源、pipeline、evaluation、RAG、topic 與 author network，讓成果一眼看懂。',
+      },
+      demoJourney: {
+        title: '視覺化資料流',
+        body: '這條動畫線把 raw data、cleaning、BM25、embedding、RRF、context 與 cited answer 串起來，說明資料如何一步步變成答案。',
+      },
       dashboard: {
         title: '總覽儀表板',
         body: '這裡彙整整個知識庫：38,152 篇 OpenAlex 論文、語意向量數、索引與 LLM 狀態，並以圖表呈現年度分布與熱門概念。',
@@ -572,6 +650,10 @@ export const zh = {
       playground: {
         title: '實驗場（重現整條 pipeline）',
         body: '上傳你自己的資料或用 sample，一步步建立 BM25／embedding 索引、測試搜尋與 RAG，再看評估結果。',
+      },
+      evaluation: {
+        title: 'Model evaluation 視覺化',
+        body: 'Evaluation 不只看延遲，也比較 coverage、citation strength、grounding readiness 與 BM25/vector overlap，讓 tradeoff 更容易解釋。',
       },
       dataStory: {
         title: '資料旅程 Data Story',

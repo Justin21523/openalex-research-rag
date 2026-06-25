@@ -10,12 +10,14 @@ import os
 import pathlib
 from playwright.sync_api import sync_playwright
 
-BASE = "http://localhost:5176"
+BASE = os.environ.get("BASE_URL", "http://localhost:5176").rstrip("/")
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SHOTS = ROOT / "docs" / "screenshots"
 VIDDIR = ROOT / "docs" / "video_raw"
 SHOTS.mkdir(parents=True, exist_ok=True)
 VIDDIR.mkdir(parents=True, exist_ok=True)
+for old in SHOTS.glob("*.png"):
+    old.unlink()
 
 VW, VH = 1440, 900
 _idx = 0
@@ -105,19 +107,24 @@ def main():
         )
         page = ctx.new_page()
 
-        # ---- 1. Dashboard + auto guided tour ----
-        print("Dashboard + tour")
-        page.goto(f"{BASE}/dashboard", wait_until="domcontentloaded")
+        # ---- 1. Demo guide + auto guided tour ----
+        print("Demo guide + tour")
+        page.goto(f"{BASE}/demo-guide", wait_until="domcontentloaded")
         settle(page, 2500)
         shot(page, "tour-welcome")          # auto-triggered welcome card
-        for i in range(7):                   # walk a few tour steps (spotlight + particles)
+        for i in range(10):                  # walk core tour steps (spotlight + particles)
             if not click_tour_next(page):
                 break
             settle(page, 1700)
             shot(page, f"tour-step{i+1}")
         close_tour(page)
         settle(page, 800)
-        scroll_shots(page, "dashboard")
+        scroll_shots(page, "demo-guide")
+
+        # ---- 1b. Dashboard ----
+        print("Dashboard")
+        if nav(page, "dashboard"):
+            scroll_shots(page, "dashboard")
 
         # ---- 2. Paper Search (+ facets + real search) ----
         print("Paper Search")
@@ -158,8 +165,6 @@ def main():
         if nav(page, "data-story"):
             shot(page, "data-story-source")
             try:
-                page.get_by_text("Sample", exact=False).first.click(timeout=4000)
-                settle(page, 2500)
                 page.get_by_text("transformer attention", exact=False).first.click(timeout=4000)
                 settle(page, 6000)
                 scroll_shots(page, "data-story-journey")
@@ -171,11 +176,14 @@ def main():
         if nav(page, "topics"):
             settle(page, 2200)
             scroll_shots(page, "topics-trends")
-            for tabname, key in [("Concept Network", "topics-network"),
-                                 ("Concept Heatmap", "topics-heatmap"),
-                                 ("Paper Cluster", "topics-cluster")]:
+            for tabname, altname, key in [("Concept Network", "概念網路", "topics-network"),
+                                          ("Concept Heatmap", "概念熱度圖", "topics-heatmap"),
+                                          ("Paper Cluster", "論文聚類", "topics-cluster")]:
                 try:
-                    page.get_by_text(tabname, exact=False).first.click(timeout=4000)
+                    try:
+                        page.get_by_text(tabname, exact=False).first.click(timeout=2000)
+                    except Exception:
+                        page.get_by_text(altname, exact=False).first.click(timeout=4000)
                     settle(page, 4500 if "Cluster" in tabname else 2500)
                     shot(page, key)
                 except Exception as e:

@@ -9,8 +9,9 @@ import { api } from '../../api/client.js';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 
 const NAV = [
+  { to: '/',             icon: Sparkles,        key: 'nav.demoGuide'        },
   { to: '/dashboard',    icon: LayoutDashboard, key: 'nav.dashboard'        },
-  { to: '/',             icon: Search,          key: 'nav.search'           },
+  { to: '/search',       icon: Search,          key: 'nav.search'           },
   { to: '/timeline',     icon: Calendar,        key: 'nav.timeline'         },
   { to: '/authors',      icon: Users,           key: 'nav.authors'          },
   { to: '/institutions', icon: Building2,       key: 'nav.institutions'     },
@@ -82,7 +83,7 @@ export default function Sidebar() {
               key={to}
               to={to}
               end={to === '/'}
-              data-tour={`nav-${to === '/' ? 'search' : to.slice(1)}`}
+              data-tour={`nav-${to === '/' ? 'demo-guide' : to.slice(1)}`}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive

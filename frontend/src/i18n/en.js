@@ -5,6 +5,7 @@ export const en = {
     subtitle: 'Research Intelligence',
   },
   nav: {
+    demoGuide: 'Demo Guide',
     dashboard: 'Dashboard',
     search: 'Paper Search',
     timeline: 'Paper Timeline',
@@ -24,6 +25,41 @@ export const en = {
     ingest: 'Data Manager',
   },
   pages: {
+    demoGuide: {
+      badge: 'Interview demo entry',
+      title: 'OpenAlex Research Intelligence Demo',
+      subtitle: 'This page compresses the project into a route an interviewer can understand quickly: start from upload or sample data, then watch data get cleaned, indexed, retrieved, fused, evaluated, and turned into a citation-grounded RAG answer.',
+      startTour: 'Start guided helper',
+      openJourney: 'Start data journey',
+      flowKicker: 'Pipeline Journey',
+      flowTitle: 'How data becomes an answer',
+      flow: {
+        raw: 'Raw OpenAlex',
+        clean: 'Clean / tokenize',
+        bm25: 'BM25',
+        vector: 'Embedding',
+        rrf: 'RRF fusion',
+        context: 'Context',
+        answer: 'Cited answer',
+      },
+      stats: {
+        works: { value: '38,152', label: 'OpenAlex papers' },
+        vectors: { value: '38,152', label: 'semantic vectors' },
+        llm: { value: 'LLM', label: 'llama.cpp connected' },
+      },
+      cards: {
+        dataStory: { title: 'Data Story', body: 'Upload or use the sample and watch data move through 7 pipeline stages.' },
+        playground: { title: 'Data Playground', body: 'Rebuild BM25 / embeddings, test search, RAG, and evaluation.' },
+        topics: { title: 'Topic / Genre visuals', body: 'Filter broad categories to reveal more distinctive topic trends and heatmaps.' },
+        authors: { title: 'Author Network', body: 'Show author and co-author collaboration networks without blank states.' },
+      },
+      interviewerTitle: 'What the interviewer should notice',
+      points: {
+        engineering: { title: 'Full engineering chain', body: 'FastAPI, DuckDB, BM25, ChromaDB, React, SSE, deployment, and LLM tunneling are integrated in one demo.' },
+        explainability: { title: 'Explainability', body: 'Every number explains what it means, what effect it has, and why it matters, not just the chart result.' },
+        demo: { title: 'Operable demo', body: 'The guided helper jumps to pages, highlights regions, and uses animation to explain the workflow.' },
+      },
+    },
     topics: {
       title: 'Topic Trends',
       subtitle: 'Publication trends by concept and concept co-occurrence network',
@@ -316,6 +352,8 @@ export const en = {
       couldNotLoad: 'Could not load author details',
       featuredAuthors: 'Featured authors',
       featuredHint: 'most-cited in the corpus — click to explore',
+      networkPreviewTitle: 'Collaboration network preview',
+      networkPreviewDesc: 'A live co-author graph for a top author in the corpus. Click any author card above to inspect their own network.',
     },
     analytics: {
       title: 'Search Analytics',
@@ -398,6 +436,37 @@ export const en = {
       lockedSearch: '🔒 Unlocks after the search test',
       s6: 'Evaluation dashboard',
       lockedRag: '🔒 Unlocks after the RAG test',
+      eval: {
+        corpus: 'Total papers',
+        uploaded: 'User uploaded',
+        bm25Vocab: 'BM25 vocabulary',
+        vectorCount: 'Vector count',
+        noEmbeddings: 'Embeddings not built',
+        ready: 'Ready',
+        running: 'Evaluating (~10–30s)…',
+        run: '▸ Run evaluation',
+        corpusPapers: 'Corpus papers',
+        testQueries: 'Test queries',
+        evalModes: 'Evaluation modes',
+        latencyChart: 'Latency distribution',
+        tradeoffChart: 'Explainable tradeoff metrics',
+        overlapChart: 'BM25 / Vector result overlap',
+        coverage: 'Coverage@10',
+        grounding: 'Grounding ready',
+        tokenMatch: 'Token match',
+        recommendation: 'Recommendation',
+        fastest: '{mode} has the lowest mean latency ({ms} ms), useful for low-latency scenarios.',
+        broadest: '{mode} has the highest coverage ({pct}%), useful for exploratory recall.',
+        hybridDefault: 'HYBRID combines BM25 literal precision with Vector semantic recall, so it is the best default mode.',
+        table: {
+          mode: 'Mode',
+          mean: 'Mean ms',
+          coverage: 'Coverage',
+          grounding: 'Grounding',
+          citations: 'Avg cites',
+          hits: 'Avg hits',
+        },
+      },
     },
     dataStory: {
       title: 'Data Story',
@@ -410,6 +479,7 @@ export const en = {
       change: 'Change',
       queryTitle: '② Pick a query',
       queryHint: 'Type a question, or click an example below, to trace its journey through the system.',
+      queryHintSample: 'If no data has been uploaded, the system will automatically load the built-in sample data before starting the demo.',
       queryPlaceholder: 'e.g. transformer attention mechanism',
       run: 'Start journey',
       running: 'Running…',
@@ -513,6 +583,14 @@ export const en = {
     welcomeTitle: '👋 Welcome to the guided tour',
     welcomeBody: 'I’ll walk you through the core features of this research intelligence platform and the engineering behind them. You can press “Skip” anytime.',
     steps: {
+      demoGuide: {
+        title: 'Demo entry point',
+        body: 'This is the interviewer-facing first stop: it connects data source, pipeline, evaluation, RAG, topic charts, and author networks in one clear route.',
+      },
+      demoJourney: {
+        title: 'Visual data flow',
+        body: 'This animated line connects raw data, cleaning, BM25, embeddings, RRF, context, and the cited answer, showing how data becomes a result step by step.',
+      },
       dashboard: {
         title: 'Overview Dashboard',
         body: 'A snapshot of the whole knowledge base: 38,152 OpenAlex papers, semantic vector count, index and LLM status, plus charts of yearly distribution and top concepts.',
@@ -572,6 +650,10 @@ export const en = {
       playground: {
         title: 'Playground (reproduce the pipeline)',
         body: 'Upload your own data or use the sample, then build BM25/embedding indexes, test search and RAG, and view evaluation — step by step.',
+      },
+      evaluation: {
+        title: 'Model evaluation visuals',
+        body: 'Evaluation now compares more than latency: coverage, citation strength, grounding readiness, and BM25/vector overlap make tradeoffs easy to explain.',
       },
       dataStory: {
         title: 'Data Story',

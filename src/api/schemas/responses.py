@@ -230,6 +230,10 @@ class EvalModeResult(BaseModel):
     latency_p99_ms: float
     latency_mean_ms: float
     avg_result_count: float
+    coverage_at_10: float = 0.0
+    avg_citations: float = 0.0
+    token_match_rate: float = 0.0
+    grounding_ready_rate: float = 0.0
 
 
 class EvaluationResult(BaseModel):
@@ -238,3 +242,4 @@ class EvaluationResult(BaseModel):
     user_uploaded: int
     queries_run: int
     test_queries: list[str]
+    mode_overlap: list[dict] = []

@@ -326,7 +326,7 @@ export default function Playground() {
       </div>
 
       {/* Step 6 — Evaluation */}
-      <div ref={sectionRefs.evaluate}>
+      <div ref={sectionRefs.evaluate} data-tour="playground-evaluate">
         <Section id="evaluate" active={currentStep === 'evaluate'}>
           <SectionHeader icon={BarChart2} label={t('pages.playground.s6')} color="bg-emerald-600" step={6} />
           {stepStatus.evaluate === 'locked' ? (

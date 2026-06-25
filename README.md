@@ -32,32 +32,37 @@
 ### Guided tour (auto-triggered) + spotlight
 | Welcome | Spotlight on a feature |
 |---|---|
-| ![tour welcome](docs/screenshots/01-tour-welcome.png) | ![tour spotlight](docs/screenshots/03-tour-step2.png) |
+| ![tour welcome](docs/screenshots/01-tour-welcome.png) | ![tour spotlight](docs/screenshots/06-tour-step5.png) |
+
+### Interview demo guide
+| Demo guide | Data flow |
+|---|---|
+| ![demo guide](docs/screenshots/12-demo-guide.png) | ![data story journey](docs/screenshots/27-data-story-journey.png) |
 
 ### Dashboard · Hybrid search · RAG Q&A
 | Dashboard | Search + facets | RAG with citations |
 |---|---|---|
-| ![dashboard](docs/screenshots/09-dashboard.png) | ![search](docs/screenshots/11-search-results.png) | ![rag](docs/screenshots/16-rag-answer.png) |
+| ![dashboard](docs/screenshots/14-dashboard.png) | ![search](docs/screenshots/16-search-results.png) | ![rag](docs/screenshots/21-rag-answer.png) |
 
 ### Data Story — pipeline journey
 | Source → query | Stage journey + explainer |
 |---|---|
-| ![data story source](docs/screenshots/21-data-story-source.png) | ![data story journey](docs/screenshots/52-data-story-journey.png) |
+| ![data story source](docs/screenshots/26-data-story-source.png) | ![data story journey](docs/screenshots/27-data-story-journey.png) |
 
 ### Pipeline Tour & analytics
 | Pipeline trace | Topic trends | Concept network |
 |---|---|---|
-| ![pipeline](docs/screenshots/17-pipeline.png) | ![topics](docs/screenshots/22-topics-trends.png) | ![network](docs/screenshots/48-topics-network.png) |
+| ![pipeline](docs/screenshots/22-pipeline.png) | ![topics](docs/screenshots/30-topics-trends.png) | ![network](docs/screenshots/31-topics-network.png) |
 
 | Paper cluster (UMAP) | Journal analysis | Research velocity |
 |---|---|---|
-| ![cluster](docs/screenshots/50-topics-cluster.png) | ![journals](docs/screenshots/23-journal-analysis.png) | ![velocity](docs/screenshots/26-research-velocity.png) |
+| ![cluster](docs/screenshots/33-topics-cluster.png) | ![journals](docs/screenshots/34-journal-analysis.png) | ![velocity](docs/screenshots/37-research-velocity.png) |
 
 | Citation graph | Work detail | English UI |
 |---|---|---|
-| ![citation](docs/screenshots/30-citation-graph.png) | ![work](docs/screenshots/46-work-detail.png) | ![en](docs/screenshots/47-i18n-english-dashboard.png) |
+| ![citation](docs/screenshots/43-citation-graph.png) | ![work](docs/screenshots/56-work-detail.png) | ![en](docs/screenshots/59-i18n-english-dashboard.png) |
 
-> Full gallery: [`docs/screenshots/`](docs/screenshots/) (52 captures, long pages segmented).
+> Full gallery: [`docs/screenshots/`](docs/screenshots/) (59 captures, long pages segmented).
 
 ---
 

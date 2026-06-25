@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Database, Check, Sparkles } from 'lucide-react';
-import { streamPipelineTrace } from '../api/client.js';
+import { api, streamPipelineTrace } from '../api/client.js';
 import { useT } from '../i18n/LanguageContext.jsx';
 import UploadZone from '../components/playground/UploadZone.jsx';
 import StageCard from '../components/pipeline/StageCard.jsx';
@@ -22,14 +22,14 @@ const SAMPLES = [
   'retrieval augmented generation',
 ];
 
-const STAGE_META = [
-  { title: 'Raw OpenAlex Data',    subtitle: 'Ingest → DuckDB',             icon: '🗄️' },
-  { title: 'Text Preprocessing',   subtitle: 'clean_for_bm25 · tokenize',   icon: '✂️' },
-  { title: 'BM25 Scoring',         subtitle: 'Sparse keyword retrieval',     icon: '#️⃣' },
-  { title: 'Vector Embedding',     subtitle: 'all-MiniLM-L6-v2 · 384-dim',  icon: '🧠' },
-  { title: 'Hybrid RRF Fusion',    subtitle: 'BM25 + Vector → RRF score',   icon: '🔀' },
-  { title: 'RAG Context Assembly', subtitle: 'Build LLM prompt window',      icon: '📄' },
-  { title: 'Answer Generation',    subtitle: 'Citation-grounded response',   icon: '💡' },
+const buildStageMeta = (t) => [
+  { title: t('pages.pipeline.stage1Title'), subtitle: t('pages.pipeline.stage1Subtitle'), icon: '▣' },
+  { title: t('pages.pipeline.stage2Title'), subtitle: t('pages.pipeline.stage2Subtitle'), icon: '✂' },
+  { title: t('pages.pipeline.stage3Title'), subtitle: t('pages.pipeline.stage3Subtitle'), icon: '#' },
+  { title: t('pages.pipeline.stage4Title'), subtitle: t('pages.pipeline.stage4Subtitle'), icon: '◉' },
+  { title: t('pages.pipeline.stage5Title'), subtitle: t('pages.pipeline.stage5Subtitle'), icon: '↔' },
+  { title: t('pages.pipeline.stage6Title'), subtitle: t('pages.pipeline.stage6Subtitle'), icon: '□' },
+  { title: t('pages.pipeline.stage7Title'), subtitle: t('pages.pipeline.stage7Subtitle'), icon: '✦' },
 ];
 
 const STAGE_KEY_TO_INDEX = {
@@ -38,6 +38,7 @@ const STAGE_KEY_TO_INDEX = {
 
 export default function DataStory() {
   const t = useT();
+  const STAGE_META = buildStageMeta(t);
   const [uploadResult, setUploadResult] = useState(null);
   const [query, setQuery] = useState('');
   const [traceData, setTraceData] = useState(null);
@@ -65,6 +66,10 @@ export default function DataStory() {
     setAutoPlay(false);
     setTimeout(() => journeyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     try {
+      if (!uploadResult) {
+        const sample = await api.playgroundUseSample();
+        setUploadResult(sample);
+      }
       for await (const evt of streamPipelineTrace(q.trim(), 5)) {
         if (evt.stage === 'error') { setError(evt.message); break; }
         if (evt.stage === 'done') {
@@ -145,43 +150,41 @@ export default function DataStory() {
       </section>
 
       {/* ② Query */}
-      {uploadResult && (
-        <motion.section
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">{t('pages.dataStory.queryTitle')}</h2>
-          <p className="text-xs text-slate-400 mb-3">{t('pages.dataStory.queryHint')}</p>
-          <div className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && runPipeline(query)}
-              placeholder={t('pages.dataStory.queryPlaceholder')}
-              className="flex-1 px-4 py-2.5 text-sm border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+      <motion.section
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">{t('pages.dataStory.queryTitle')}</h2>
+        <p className="text-xs text-slate-400 mb-3">{uploadResult ? t('pages.dataStory.queryHint') : t('pages.dataStory.queryHintSample')}</p>
+        <div className="flex gap-2 mb-2">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && runPipeline(query)}
+            placeholder={t('pages.dataStory.queryPlaceholder')}
+            className="flex-1 px-4 py-2.5 text-sm border border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={() => runPipeline(query)}
+            disabled={loading || !query.trim()}
+            className="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+          >
+            <Play size={14} /> {loading ? t('pages.dataStory.running') : t('pages.dataStory.run')}
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {SAMPLES.map((s) => (
             <button
-              onClick={() => runPipeline(query)}
-              disabled={loading || !query.trim()}
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+              key={s}
+              onClick={() => { setQuery(s); runPipeline(s); }}
+              className="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600"
             >
-              <Play size={14} /> {loading ? t('pages.dataStory.running') : t('pages.dataStory.run')}
+              {s}
             </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {SAMPLES.map((s) => (
-              <button
-                key={s}
-                onClick={() => { setQuery(s); runPipeline(s); }}
-                className="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </motion.section>
-      )}
+          ))}
+        </div>
+      </motion.section>
 
       {error && (
         <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">{error}</div>

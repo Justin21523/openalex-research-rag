@@ -42,10 +42,19 @@ export default function AuthorDashboard() {
   const [coauthors, setCoauthors] = useState(null);
   const [coLoading, setCoLoading] = useState(false);
   const [featured, setFeatured] = useState([]);
+  const [previewNetwork, setPreviewNetwork] = useState(null);
 
   useEffect(() => {
     api.getTopAuthors(12).then((res) => setFeatured(Array.isArray(res) ? res : [])).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const first = featured[0];
+    if (!first || previewNetwork) return;
+    api.getCoauthors(first.author_id, 24)
+      .then((res) => setPreviewNetwork({ author: first, graph: res }))
+      .catch(() => setPreviewNetwork({ author: first, graph: { nodes: [], edges: [] } }));
+  }, [featured, previewNetwork]);
 
   const asList = (res) => (Array.isArray(res) ? res : (res?.results ?? []));
 
@@ -352,6 +361,22 @@ export default function AuthorDashboard() {
                   </div>
                 </button>
               ))}
+            </div>
+          )}
+          {previewNetwork && (
+            <div className="mt-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+              <h3 className="font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                <Network size={15} /> {t('pages.authors.networkPreviewTitle', 'Collaboration network preview')}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                {t('pages.authors.networkPreviewDesc', 'A live co-author graph for a top author in the corpus. Click any author card above to inspect their own network.')}
+              </p>
+              <CoauthorNetwork
+                centerName={previewNetwork.author.display_name}
+                nodes={previewNetwork.graph?.nodes ?? []}
+                edges={previewNetwork.graph?.edges ?? []}
+                onNodeClick={(_, name) => searchAuthors(name)}
+              />
             </div>
           )}
         </div>

@@ -23,6 +23,7 @@ import InstitutionExplorer from './pages/InstitutionExplorer.jsx';
 import AnalyticsDashboard from './pages/AnalyticsDashboard.jsx';
 import PaperTimeline from './pages/PaperTimeline.jsx';
 import DataStory from './pages/DataStory.jsx';
+import DemoGuide from './pages/DemoGuide.jsx';
 
 export default function App() {
   return (
@@ -37,7 +38,8 @@ export default function App() {
             <div className="min-h-full px-6 py-6">
               <Routes>
                 <Route path="/dashboard"   element={<Dashboard />} />
-                <Route path="/"            element={<PaperSearch />} />
+                <Route path="/"            element={<DemoGuide />} />
+                <Route path="/demo-guide"  element={<DemoGuide />} />
                 <Route path="/search"      element={<PaperSearch />} />
                 <Route path="/timeline"    element={<PaperTimeline />} />
                 <Route path="/authors"     element={<AuthorDashboard />} />

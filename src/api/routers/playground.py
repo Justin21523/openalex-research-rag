@@ -25,6 +25,7 @@ from src.ingestion.db_writer import write_works
 from src.preprocessing.deduplicator import deduplicate_works
 from src.preprocessing.normalizer import normalize_work, normalize_works_batch
 from src.preprocessing.text_cleaner import clean_text, reconstruct_abstract
+from src.preprocessing.text_cleaner import clean_for_bm25
 from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -318,11 +319,13 @@ async def evaluate(body: dict = Body(default={})):
         modes_to_test.append("vector")
 
     mode_results: dict[str, EvalModeResult] = {}
+    per_query_hits: dict[str, dict[str, list[dict]]] = {q: {} for q in queries}
     REPEATS = 3
 
     for mode in modes_to_test:
         latencies = []
         result_counts = []
+        first_run_hits: list[list[dict]] = []
         for q in queries:
             for _ in range(REPEATS):
                 t0 = time.perf_counter()
@@ -332,15 +335,39 @@ async def evaluate(body: dict = Body(default={})):
                     result_counts.append(len(hits))
                 except Exception:
                     pass
+            try:
+                hits = state.hybrid_search.search(q, k=10, mode=mode)
+                per_query_hits[q][mode] = hits
+                first_run_hits.append(hits)
+            except Exception:
+                per_query_hits[q][mode] = []
 
         if latencies:
             sorted_l = sorted(latencies)
             n = len(sorted_l)
+            flat_hits = [h for hits in first_run_hits for h in hits]
+            citations = [float(h.get("cited_by_count") or 0) for h in flat_hits]
+            matched = 0
+            total_hits = 0
+            grounding_ready = 0
+            for q, hits in zip(queries, first_run_hits, strict=False):
+                q_tokens = {tok for tok in clean_for_bm25(q).split() if tok}
+                for h in hits:
+                    total_hits += 1
+                    title_tokens = {tok for tok in clean_for_bm25(h.get("title") or "").split() if tok}
+                    if q_tokens and q_tokens.intersection(title_tokens):
+                        matched += 1
+                    if h.get("work_id") and (h.get("title") or h.get("abstract")):
+                        grounding_ready += 1
             mode_results[mode] = EvalModeResult(
                 latency_p50_ms=round(sorted_l[n // 2], 2),
                 latency_p99_ms=round(sorted_l[min(int(n * 0.99), n - 1)], 2),
                 latency_mean_ms=round(statistics.mean(latencies), 2),
                 avg_result_count=round(statistics.mean(result_counts), 1),
+                coverage_at_10=round(statistics.mean(result_counts) / 10, 3) if result_counts else 0,
+                avg_citations=round(statistics.mean(citations), 1) if citations else 0,
+                token_match_rate=round(matched / total_hits, 3) if total_hits else 0,
+                grounding_ready_rate=round(grounding_ready / total_hits, 3) if total_hits else 0,
             )
 
     corpus_total = state.conn.execute("SELECT COUNT(*) FROM works").fetchone()[0]
@@ -348,12 +375,27 @@ async def evaluate(body: dict = Body(default={})):
         "SELECT COUNT(*) FROM works WHERE work_id LIKE 'W_USER_%'"
     ).fetchone()[0]
 
+    mode_overlap = []
+    for q in queries:
+        bm25_ids = {h.get("work_id") for h in per_query_hits.get(q, {}).get("bm25", [])}
+        vec_ids = {h.get("work_id") for h in per_query_hits.get(q, {}).get("vector", [])}
+        hybrid_ids = {h.get("work_id") for h in per_query_hits.get(q, {}).get("hybrid", [])}
+        if bm25_ids or vec_ids or hybrid_ids:
+            mode_overlap.append({
+                "query": q,
+                "bm25_only": len(bm25_ids - vec_ids),
+                "vector_only": len(vec_ids - bm25_ids),
+                "both": len(bm25_ids & vec_ids),
+                "hybrid_total": len(hybrid_ids),
+            })
+
     return EvaluationResult(
         modes=mode_results,
         corpus_total=corpus_total,
         user_uploaded=user_uploaded,
         queries_run=len(queries),
         test_queries=list(queries),
+        mode_overlap=mode_overlap,
     )
 
 

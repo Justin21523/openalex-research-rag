@@ -9,6 +9,12 @@ from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
+BROAD_CONCEPTS = {
+    "Computer science", "Mathematics", "Philosophy", "Biology", "Physics",
+    "Chemistry", "Medicine", "Law", "Psychology", "Archaeology", "Geography",
+    "Political science", "Sociology", "Economics", "Engineering",
+}
+
 
 def build_concept_cooccurrence(
     conn: duckdb.DuckDBPyConnection,
@@ -29,8 +35,12 @@ def build_concept_cooccurrence(
             concepts = json.loads(concepts_json or "[]")
         except Exception:
             continue
-        # Take top-5 concepts by score per work (avoid noise)
-        concepts = sorted(concepts, key=lambda c: c.get("score", 0), reverse=True)[:5]
+        # Take the strongest specific concepts per work. Level-0 disciplines are
+        # too broad for a useful demo network and drown out topical structure.
+        concepts = [
+            c for c in sorted(concepts, key=lambda c: c.get("score", 0), reverse=True)
+            if c.get("display_name") not in BROAD_CONCEPTS and int(c.get("level") or 1) > 0
+        ][:6]
         ids = [(c.get("id", "").split("/")[-1], c.get("display_name", "")) for c in concepts]
         ids = [(cid, name) for cid, name in ids if cid and name]
 

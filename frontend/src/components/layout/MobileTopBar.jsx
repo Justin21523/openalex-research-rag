@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Menu, X, Home, Search, GitBranch, TrendingUp, MessageSquare, FlaskConical, Activity } from 'lucide-react';
+import { BookOpen, Menu, X, Home, Search, GitBranch, TrendingUp, MessageSquare, FlaskConical, Activity, Sparkles } from 'lucide-react';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 
 const NAV = [
+  { to: '/', icon: <Sparkles size={16} />, key: 'nav.demoGuide' },
   { to: '/dashboard', icon: <Home size={16} />, key: 'nav.dashboard' },
   { to: '/search', icon: <Search size={16} />, key: 'nav.search' },
   { to: '/rag', icon: <MessageSquare size={16} />, key: 'nav.rag' },

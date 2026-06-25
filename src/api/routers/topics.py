@@ -13,6 +13,12 @@ from src.retrieval.duckdb_store import get_top_concepts, get_topic_trends
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 
+BROAD_CONCEPTS = {
+    "Computer science", "Mathematics", "Philosophy", "Biology", "Physics",
+    "Chemistry", "Medicine", "Law", "Psychology", "Archaeology", "Geography",
+    "Political science", "Sociology", "Economics", "Engineering",
+}
+
 # ── Cluster cache (UMAP heavy) ────────────────────────────────────────────────
 _cluster_cache: tuple[float, list[dict]] | None = None
 _CLUSTER_TTL = 600  # 10 minutes
@@ -33,6 +39,36 @@ def _cache_set(key: str, data) -> None:
     _warmup_cache[key] = {"ts": time.time(), "data": data}
 
 
+def _specific_top_concepts(conn, limit: int) -> list[dict]:
+    """Top concepts suitable for demo charts: skip broad level-0 disciplines."""
+    rows = conn.execute(
+        """
+        SELECT concepts_json
+        FROM works
+        WHERE concepts_json IS NOT NULL AND TRIM(concepts_json) != ''
+        """
+    ).fetchall()
+    counts: dict[str, dict] = {}
+    for (concepts_json,) in rows:
+        try:
+            concepts = json.loads(concepts_json or "[]")
+        except Exception:
+            continue
+        for c in concepts:
+            if not isinstance(c, dict):
+                continue
+            name = c.get("display_name") or ""
+            level = c.get("level")
+            if not name or name in BROAD_CONCEPTS:
+                continue
+            if level is not None and int(level) == 0:
+                continue
+            cid = (c.get("id") or name).split("/")[-1]
+            entry = counts.setdefault(cid, {"concept_id": cid, "concept_name": name, "work_count": 0})
+            entry["work_count"] += 1
+    return sorted(counts.values(), key=lambda r: r["work_count"], reverse=True)[:limit]
+
+
 @router.get("/trends", response_model=list[TopicTrend])
 def topic_trends(
     concept: str | None = Query(None),
@@ -47,13 +83,14 @@ def topic_trends(
 @router.get("/concepts", response_model=list[ConceptStats])
 def top_concepts(
     limit: int = Query(50, ge=1, le=200),
+    specific: bool = Query(True, description="Prefer specific concepts over broad level-0 disciplines."),
     conn=Depends(get_conn),
 ) -> list[ConceptStats]:
-    cache_key = f"concepts:{limit}"
+    cache_key = f"concepts:{limit}:{specific}"
     cached = _cache_get(cache_key)
     if cached is not None:
         return cached
-    rows = get_top_concepts(conn, limit=limit)
+    rows = _specific_top_concepts(conn, limit=limit) if specific else get_top_concepts(conn, limit=limit)
     result = [ConceptStats(**r) for r in rows]
     _cache_set(cache_key, result)
     return result
@@ -76,8 +113,8 @@ def concept_heatmap(
     if cached is not None:
         return cached
 
-    # Get top concepts by work count
-    top_concepts_rows = get_top_concepts(conn, limit=top_n)
+    # Get top concepts by work count, excluding broad level-0 disciplines.
+    top_concepts_rows = _specific_top_concepts(conn, limit=top_n)
     concept_names = [r["concept_name"] for r in top_concepts_rows]
 
     years = list(range(year_from, year_to + 1))
