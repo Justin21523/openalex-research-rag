@@ -16,13 +16,14 @@ DIST="$(cd "$(dirname "$0")/.." && pwd)/frontend/dist"
 export SSHPASS
 
 SSHO=(-p "$SSH_PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=20 -o ServerAliveInterval=10)
+SCPO=(-P "$SSH_PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=20 -o ServerAliveInterval=10)
 
 run_ssh() { sshpass -e ssh "${SSHO[@]}" "${SSH_USER}@${SSH_HOST}" "$@"; }
 
 # scp one file, retrying forever until it succeeds (server is flaky)
 put() {
   local src="$1" dst="$2" n=0
-  until sshpass -e scp "${SSHO[@]}" "$src" "${SSH_USER}@${SSH_HOST}:${dst}"; do
+  until sshpass -e scp "${SCPO[@]}" "$src" "${SSH_USER}@${SSH_HOST}:${dst}"; do
     n=$((n+1)); echo "  retry $n: $src"; sleep 5
   done
   echo "  ok: $(basename "$src")"
