@@ -12,6 +12,29 @@ back to extractive answers, so the app keeps working.
                          [ Your machine: llama.cpp (:8080) ]
 ```
 
+## Quick deploy (scripts) — run from a network that can reach SSH port 2965
+
+```bash
+export SSHPASS='<server-password>'
+
+# 1) Frontend → /public_html/projects/openalex-research-rag/ (small files, auto-retry)
+bash scripts/deploy_dothost.sh
+
+# 2) Full backend as a Docker container on the server (resumable ~2GB data rsync)
+bash scripts/deploy_backend.sh
+
+# 3) On the server: add the nginx /api proxy
+#    (docs/deploy/nginx-openalex.conf) → nginx -t && reload
+
+# 4) On THIS local machine: keep the reverse tunnel up so the server's backend
+#    reaches your local llama.cpp:
+bash scripts/tunnel_llama.sh
+```
+
+Note: the server (`live.dothost.net:2965`) is intermittently reachable; all scripts
+retry on drops, and the backend data transfer uses `rsync --partial --append-verify`
+so it resumes where it left off.
+
 ---
 
 ## 1. Frontend (static build)
