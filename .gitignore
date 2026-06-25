@@ -1,0 +1,45 @@
+# Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.uv/
+
+# Data (do not commit full dataset)
+data/openalex.duckdb
+data/bm25_index.joblib
+data/chroma/
+data/evaluation_results.json
+
+# Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models cache
+.cache/
+models/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Capture artifacts
+docs/video_raw/
+*.duckdb.wal
+data/research.duckdb

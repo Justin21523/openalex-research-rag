@@ -1,0 +1,23 @@
+bm25:
+  k1: 1.5
+  b: 0.75
+
+hybrid:
+  rrf_k: 60
+  bm25_weight: 0.5
+  vector_weight: 0.5
+
+retrieval:
+  default_k: 10
+  max_k: 100
+  fetch_multiplier: 4    # fetch_k = k * fetch_multiplier for RRF candidates
+
+rag:
+  top_k: 5
+  max_context_chars: 8000
+  min_citations: 1
+
+reranker:
+  enabled: false
+  model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  top_k: 5

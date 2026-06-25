@@ -1,0 +1,22 @@
+// Guided-tour step definitions (Batch 2 — ~16 steps across the whole app).
+// Each step: route, a CSS-selector anchor to spotlight (null = centered card),
+// i18n keys, placement, and a `theme` driving the surrounding particle performance.
+export const TOUR_STEPS = [
+  { id: 'welcome',     route: null,         anchor: null,                              titleKey: 'tour.welcomeTitle', bodyKey: 'tour.welcomeBody',          placement: 'center', theme: 'overview' },
+  { id: 'dashboard',   route: '/dashboard', anchor: '[data-tour="dashboard-stats"]',   titleKey: 'tour.steps.dashboard.title',   bodyKey: 'tour.steps.dashboard.body',   placement: 'bottom', theme: 'overview' },
+  { id: 'search',      route: '/search',    anchor: '[data-tour="search-box"]',        titleKey: 'tour.steps.search.title',      bodyKey: 'tour.steps.search.body',      placement: 'bottom', theme: 'search' },
+  { id: 'timeline',    route: '/timeline',  anchor: '[data-tour="timeline"]',          titleKey: 'tour.steps.timeline.title',    bodyKey: 'tour.steps.timeline.body',    placement: 'bottom', theme: 'trends' },
+  { id: 'authors',     route: '/authors',   anchor: '[data-tour="authors"]',           titleKey: 'tour.steps.authors.title',     bodyKey: 'tour.steps.authors.body',     placement: 'bottom', theme: 'graph' },
+  { id: 'institutions',route: '/institutions', anchor: '[data-tour="institutions"]',   titleKey: 'tour.steps.institutions.title',bodyKey: 'tour.steps.institutions.body',placement: 'bottom', theme: 'graph' },
+  { id: 'citations',   route: '/citations', anchor: '[data-tour="citations"]',         titleKey: 'tour.steps.citations.title',   bodyKey: 'tour.steps.citations.body',   placement: 'bottom', theme: 'graph' },
+  { id: 'topics',      route: '/topics',    anchor: '[data-tour="topics"]',            titleKey: 'tour.steps.topics.title',      bodyKey: 'tour.steps.topics.body',      placement: 'bottom', theme: 'trends' },
+  { id: 'velocity',    route: '/velocity',  anchor: '[data-tour="velocity"]',          titleKey: 'tour.steps.velocity.title',    bodyKey: 'tour.steps.velocity.body',    placement: 'bottom', theme: 'trends' },
+  { id: 'journals',    route: '/journals',  anchor: '[data-tour="journals"]',          titleKey: 'tour.steps.journals.title',    bodyKey: 'tour.steps.journals.body',     placement: 'bottom', theme: 'trends' },
+  { id: 'rag',         route: '/rag',       anchor: '[data-tour="rag-input"]',         titleKey: 'tour.steps.rag.title',         bodyKey: 'tour.steps.rag.body',         placement: 'top',    theme: 'rag' },
+  { id: 'literatureReview', route: '/literature-review', anchor: '[data-tour="literature-review"]', titleKey: 'tour.steps.literatureReview.title', bodyKey: 'tour.steps.literatureReview.body', placement: 'bottom', theme: 'rag' },
+  { id: 'readingList', route: '/reading-list', anchor: '[data-tour="reading-list"]',   titleKey: 'tour.steps.readingList.title', bodyKey: 'tour.steps.readingList.body',  placement: 'bottom', theme: 'list' },
+  { id: 'pipeline',    route: '/pipeline',  anchor: '[data-tour="pipeline-run"]',      titleKey: 'tour.steps.pipeline.title',    bodyKey: 'tour.steps.pipeline.body',    placement: 'bottom', theme: 'data' },
+  { id: 'dataStory',   route: '/data-story',anchor: '[data-tour="data-source"]',       titleKey: 'tour.steps.dataStory.title',   bodyKey: 'tour.steps.dataStory.body',   placement: 'bottom', theme: 'data' },
+  { id: 'playground',  route: '/playground',anchor: '[data-tour="playground"]',        titleKey: 'tour.steps.playground.title',  bodyKey: 'tour.steps.playground.body',   placement: 'bottom', theme: 'data' },
+  { id: 'analytics',   route: '/analytics', anchor: '[data-tour="analytics-summary"]', titleKey: 'tour.steps.analytics.title',   bodyKey: 'tour.steps.analytics.body',   placement: 'bottom', theme: 'analytics' },
+];
