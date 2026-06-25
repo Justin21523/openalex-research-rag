@@ -32,7 +32,7 @@ Thumbs.db
 
 # Models cache
 .cache/
-models/
+/models/
 
 # Node
 node_modules/
